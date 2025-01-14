@@ -1,0 +1,14 @@
+name: "app"
+services:
+  server:
+    image: node:20
+    container_name: server
+    ports:
+      - "5000:5000"
+    working_dir: ./
+    volumes:
+      - ./
+    environment:
+      - PORT=5000
+      - EXPO_PUBLIC_SECURE_KEY=9b0458e7-30d7-4f1e-9238-f315971fed68
+    command: sh -c "npm run android"
