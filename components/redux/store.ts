@@ -7,6 +7,10 @@ const store = configureStore({
     user: userSlice,
     transaction: transSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -1,7 +1,6 @@
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import Crypto from "crypto-js";
 
 // // Async thunks
 // const loginAction = createAsyncThunk(

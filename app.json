@@ -14,7 +14,8 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/r_logo.jpg",
-        "backgroundColor": "#000"
+        "backgroundColor": "#000",
+        "resizeMode": "contain"
       },
       "softwareKeyboardLayoutMode": "pan",
       "splash": {

@@ -8,7 +8,7 @@ import { AppDispatch } from "@/components/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { clearError, loginAction } from "@/components/redux/slices/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Crypto from "crypto-js";
+import * as Crypto from "expo-crypto";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -48,14 +48,10 @@ const Login = () => {
       }
       const tempUser = users2[index];
 
-      let key = Crypto.SHA256(
-        process.env.EXPO_PUBLIC_SECURE_KEY || ""
-      ).toString();
-
-      const hashedPassword = Crypto.AES.decrypt(
-        tempUser.password,
-        key
-      ).toString(Crypto.enc.Utf8);
+      const hashedPassword = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        password
+      );
 
       if (hashedPassword !== password) {
         throw new Error("Invalid password");

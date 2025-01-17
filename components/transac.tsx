@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { allTransactions, Transaction } from "./redux/slices/transSlice";
 import Slide from "./Slide";
@@ -35,14 +41,14 @@ const Transac = ({ item }: { item: Transaction }) => {
 
   const updateTransaction = async () => {
     let tempTransactions = transactions.map((transaction: Transaction) => {
-      if (transaction.id === transaction.id) {
+      if (transaction.id === item.id) {
         return {
           ...transaction,
           name,
           type,
           date,
           category,
-          amount,
+          amount: Number(amount),
           description,
         };
       }
@@ -111,7 +117,6 @@ const Transac = ({ item }: { item: Transaction }) => {
     <>
       <TouchableOpacity
         onLongPress={openSelect}
-        key={item.id}
         className="flex w-full max-w-full bg-black-200 rounded-lg p-3 justify-between items-center flex-row gap-4"
       >
         <View className="flex justify-between items-start gap-2">
@@ -188,143 +193,154 @@ const Transac = ({ item }: { item: Transaction }) => {
         </Slide>
       )}
       {update && (
-        <Slide open={update} onClose={() => setUpdate(false)}>
-          <View className="overflow-y-auto max-h-[75vh]">
-            <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
-              <Text className="font-bold text-white text-lg text-center">
-                Update Transaction
-              </Text>
-              <TouchableOpacity
-                className="absolute right-3 top-2"
-                onPress={() => setUpdate(false)}
-              >
-                <Icon name={"close"} size={28} className="text-gray-400" />
-              </TouchableOpacity>
-            </View>
-            <View className="min-h-20 w-full px-2 py-2">
-              <View className="px-4 pb-10">
-                <InputField
-                  title={"Name"}
-                  handleChange={(e: any) => setName(e)}
-                  value={name}
-                  keyboardType="text"
-                  viewStyle="mt-6 w-full"
-                />
-                <InputField
-                  title={"Amount"}
-                  handleChange={(e: any) => setAmount(e)}
-                  value={amount}
-                  keyboardType="decimal-pad"
-                  viewStyle="mt-6 w-full"
-                />
-                <View className={`space-y-2 mt-6 w-full`}>
-                  <Text className="text-base text-gray-100">Type</Text>
-                  <RadioButton.Group
-                    onValueChange={(newValue) => setType(newValue)}
-                    value={type}
-                  >
-                    <View className="flex flex-row items-center justify-evenly">
-                      <RadioButton.Item
-                        labelStyle={{ color: "white" }}
-                        label="Debit"
-                        value="debit"
-                        position="leading"
-                        color="red"
-                      />
-                      <RadioButton.Item
-                        labelStyle={{ color: "white" }}
-                        color="green"
-                        label="Credit"
-                        value="credit"
-                        position="leading"
-                      />
-                    </View>
-                  </RadioButton.Group>
-                </View>
-                <View className={`space-y-2 mt-6 w-full`}>
-                  <Text className="text-base text-gray-100">Date</Text>
-                  <View className="w-full h-12 px-2 bg-black-100 rounded-2xl border-2 relative border-black-200 focus:border-secondary flex flex-row items-center">
-                    <TextInput
-                      className="flex-auto flex text-white font-semibold text-base"
-                      value={date.toDateString()}
-                      onChangeText={(e: any) => setDate(e)}
-                      editable={false}
-                      onPress={() => {
-                        DateTimePickerAndroid.open({
-                          value: new Date(),
-                          mode: "date",
-                          onChange: (_, dat) => dat && setDate(dat),
-                        });
-                      }}
-                    />
-                    <TouchableOpacity
-                      onPress={() => {
-                        DateTimePickerAndroid.open({
-                          value: new Date(),
-                          mode: "date",
-                          onChange: (_, dat) => dat && setDate(dat),
-                        });
-                      }}
-                      className="bg-secondary absolute top-0 right-0 rounded-2xl h-11 px-5 flex flex-row justify-center items-center"
+        <Slide
+          popupStyle={{ overflowY: "auto" }}
+          open={update}
+          onClose={() => setUpdate(false)}
+        >
+          <ScrollView
+            style={{
+              height: 0.5 * window.innerHeight,
+              maxHeight: 0.5 * window.innerHeight,
+            }}
+          >
+            <View style={{ height: "100%" }}>
+              <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
+                <Text className="font-bold text-white text-lg text-center">
+                  Update Transaction
+                </Text>
+                <TouchableOpacity
+                  className="absolute right-3 top-2"
+                  onPress={() => setUpdate(false)}
+                >
+                  <Icon name={"close"} size={28} className="text-gray-400" />
+                </TouchableOpacity>
+              </View>
+              <View className="min-h-20 w-full px-2 py-2">
+                <View className="px-4 pb-10">
+                  <InputField
+                    title={"Name"}
+                    handleChange={(e: any) => setName(e)}
+                    value={name}
+                    keyboardType="text"
+                    viewStyle="mt-6 w-full"
+                  />
+                  <InputField
+                    title={"Amount"}
+                    handleChange={(e: any) => setAmount(e)}
+                    value={amount + ""}
+                    keyboardType="decimal-pad"
+                    viewStyle="mt-6 w-full"
+                  />
+                  <View className={`space-y-2 mt-6 w-full`}>
+                    <Text className="text-base text-gray-100">Type</Text>
+                    <RadioButton.Group
+                      onValueChange={(newValue) => setType(newValue)}
+                      value={type}
                     >
-                      <Text className="text-primary text-lg font-semibold">
-                        Date
-                      </Text>
-                    </TouchableOpacity>
+                      <View className="flex flex-row items-center justify-evenly">
+                        <RadioButton.Item
+                          labelStyle={{ color: "white" }}
+                          label="Debit"
+                          value="debit"
+                          position="leading"
+                          color="red"
+                        />
+                        <RadioButton.Item
+                          labelStyle={{ color: "white" }}
+                          color="green"
+                          label="Credit"
+                          value="credit"
+                          position="leading"
+                        />
+                      </View>
+                    </RadioButton.Group>
                   </View>
-                </View>
-                <View className={`space-y-2 mt-6 w-full`}>
-                  <Text className="text-base text-gray-100">Category</Text>
-                  <SelectList
-                    setSelected={(val: any) => setCategory(val)}
-                    data={categoryType}
-                    save="value"
-                    defaultOption={{ key: category, value: category }}
-                    boxStyles={{ backgroundColor: "#161622" }}
-                    dropdownItemStyles={{ backgroundColor: "#161622" }}
-                    dropdownTextStyles={{ color: "white" }}
-                    dropdownStyles={{ backgroundColor: "black" }}
-                    inputStyles={{ color: "white" }}
-                    search={false}
-                    placeholder="Select Category"
-                    searchicon={
-                      <Icon name="search" size={24} color={"white"} />
-                    }
+                  <View className={`space-y-2 mt-6 w-full`}>
+                    <Text className="text-base text-gray-100">Date</Text>
+                    <View className="w-full h-12 px-2 bg-black-100 rounded-2xl border-2 relative border-black-200 focus:border-secondary flex flex-row items-center">
+                      <TextInput
+                        className="flex-auto flex text-white font-semibold text-base"
+                        value={date.toDateString()}
+                        onChangeText={(e: any) => setDate(e)}
+                        editable={false}
+                        onPress={() => {
+                          DateTimePickerAndroid.open({
+                            value: new Date(),
+                            mode: "date",
+                            onChange: (_, dat) => dat && setDate(dat),
+                          });
+                        }}
+                      />
+                      <TouchableOpacity
+                        onPress={() => {
+                          DateTimePickerAndroid.open({
+                            value: new Date(),
+                            mode: "date",
+                            onChange: (_, dat) => dat && setDate(dat),
+                          });
+                        }}
+                        className="bg-secondary absolute top-0 right-0 rounded-2xl h-11 px-5 flex flex-row justify-center items-center"
+                      >
+                        <Text className="text-primary text-lg font-semibold">
+                          Date
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  <View className={`space-y-2 mt-6 w-full`}>
+                    <Text className="text-base text-gray-100">Category</Text>
+                    <SelectList
+                      setSelected={(val: any) => setCategory(val)}
+                      data={categoryType}
+                      save="value"
+                      defaultOption={{ key: category, value: category }}
+                      boxStyles={{ backgroundColor: "#161622" }}
+                      dropdownItemStyles={{ backgroundColor: "#161622" }}
+                      dropdownTextStyles={{ color: "white" }}
+                      dropdownStyles={{ backgroundColor: "black" }}
+                      inputStyles={{ color: "white" }}
+                      search={false}
+                      placeholder="Select Category"
+                      searchicon={
+                        <Icon name="search" size={24} color={"white"} />
+                      }
+                    />
+                  </View>
+                  <InputField
+                    title={"Description"}
+                    handleChange={(e: any) => setDescription(e)}
+                    value={description}
+                    keyboardType="text"
+                    viewStyle="mt-6 w-full"
                   />
                 </View>
-                <InputField
-                  title={"Description"}
-                  handleChange={(e: any) => setDescription(e)}
-                  value={description}
-                  keyboardType="text"
-                  viewStyle="mt-6 w-full"
-                />
+              </View>
+              <View className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4">
+                <TouchableOpacity
+                  className="bg-secondary-200 p-2 min-w-16 rounded-lg"
+                  onPress={updateTransaction}
+                >
+                  <Text className="color-white text-center uppercase font-semibold">
+                    Update
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="border border-[#49496c] p-2 min-w-16 rounded-lg"
+                  onPress={() => setUpdate(false)}
+                >
+                  <Text className="color-white text-center uppercase font-semibold">
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-            <View className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4">
-              <TouchableOpacity
-                className="bg-secondary-200 p-2 min-w-16 rounded-lg"
-                onPress={updateTransaction}
-              >
-                <Text className="color-white text-center uppercase font-semibold">
-                  Update
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="border border-[#49496c] p-2 min-w-16 rounded-lg"
-                onPress={() => setUpdate(false)}
-              >
-                <Text className="color-white text-center uppercase font-semibold">
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          </ScrollView>
         </Slide>
       )}
       {deleteT && (
         <Slide open={deleteT} onClose={() => setDeleteT(false)}>
-          <View className="overflow-y-auto max-h-[75vh]">
+          <View className="max-h-[80vh]">
             <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
               <Text className="font-bold text-white text-lg text-center">
                 Delete Transaction

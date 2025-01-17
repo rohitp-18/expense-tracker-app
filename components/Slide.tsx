@@ -1,5 +1,12 @@
-import { Modal, ModalBaseProps, Pressable, ViewStyle } from "react-native";
+import {
+  Modal,
+  ModalBaseProps,
+  Pressable,
+  ScrollView,
+  ViewStyle,
+} from "react-native";
 import React from "react";
+import { View } from "react-native";
 
 interface SlideProps extends ModalBaseProps {
   open?: boolean;
@@ -10,16 +17,24 @@ interface SlideProps extends ModalBaseProps {
 
 const Slide = ({ open, onClose, children, popupStyle }: SlideProps) => {
   return (
-    <Modal transparent animationType="fade" visible={open} onDismiss={onClose}>
+    <Modal
+      className="overflow-y-auto"
+      transparent
+      animationType="fade"
+      visible={open}
+      onDismiss={onClose}
+    >
       <Pressable
         onPress={onClose}
         className="flex-1 bg-[#1e1e2daa] justify-center items-center"
       >
         <Pressable
           style={popupStyle}
-          className="bg-primary gap-1 rounded-lg w-72"
+          className="bg-primary overflow-y-auto gap-1 min-w-80 rounded-lg w-80"
         >
-          {children}
+          <ScrollView className="bg-primary w-80 gap-1 rounded-lg min-w-80">
+            {children}
+          </ScrollView>
         </Pressable>
       </Pressable>
     </Modal>

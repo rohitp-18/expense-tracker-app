@@ -24,61 +24,8 @@ interface TransactionsState {
   categories: Category[];
 }
 
-const transactions = [
-  {
-    name: "milk",
-    amount: 1205,
-    description: "daily milk",
-    type: "credit",
-    date: new Date("12-2-2024").toString(),
-    category: "milk",
-    id: "1",
-    user: "efe68dc5-9e52-4e10-8f5d-876d386ced19",
-  },
-  {
-    name: "milk",
-    amount: 1205,
-    description: "daily milk",
-    type: "credit",
-    date: new Date("12-23-2024").toString(),
-    category: "farm",
-    id: "5",
-    user: "efe68dc5-9e52-4e10-8f5d-876d386ced19",
-  },
-  {
-    name: "farm",
-    amount: 3525,
-    description: "daily milk",
-    type: "credit",
-    date: new Date("12-11-2024").toString(),
-    category: "college",
-    id: "2",
-    user: "efe68dc5-9e52-4e10-8f5d-876d386ced19",
-  },
-  {
-    name: "college",
-    amount: 1205,
-    description: "daily milk",
-    type: "debit",
-    date: new Date("12-16-2023").toString(),
-    category: "farm",
-    id: "3",
-    user: "efe68dc5-9e52-4e10-8f5d-876d386ced19",
-  },
-  {
-    name: "store",
-    amount: 1205,
-    description: "daily milk",
-    type: "debit",
-    date: new Date("11-11-2024").toString(),
-    category: "milk",
-    id: "4",
-    user: "efe68dc5-9e52-4e10-8f5d-876d386ced19",
-  },
-];
-
 const initialState: TransactionsState = {
-  transactions: transactions,
+  transactions: [],
   categories: [],
 };
 

@@ -18,7 +18,7 @@ import { RadioButton } from "react-native-paper";
 // import { Modal } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
-import Crypto from "crypto-js";
+import * as Crypto from "expo-crypto";
 
 const ManageCategories = () => {
   const [update, setUpdate] = useState<Category | undefined>();
@@ -61,10 +61,6 @@ const ManageCategories = () => {
     dispatch(allCategories(tempCategories));
   };
 
-  const generateStrongUUID = () => {
-    return Crypto.lib.WordArray.random(20).toString(Crypto.enc.Hex);
-  };
-
   const addCategory = async () => {
     if (name === "") {
       Alert.alert("Incomplete", "please fill all required fields");
@@ -76,7 +72,7 @@ const ManageCategories = () => {
         name,
         type,
         createdAt: new Date(Date.now()).toString(),
-        id: generateStrongUUID(),
+        id: Crypto.randomUUID(),
       },
     ];
 

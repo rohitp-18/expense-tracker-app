@@ -17,9 +17,9 @@ import { RadioButton } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
-import Crypto from "crypto-js";
 import { AppDispatch } from "@/components/redux/store";
 import { addTransaction } from "@/components/redux/slices/transSlice";
+import * as Crypto from "expo-crypto";
 
 const New = () => {
   const [name, setName] = useState("");
@@ -34,10 +34,6 @@ const New = () => {
   const { user } = useSelector((state: any) => state.user);
   const { categories } = useSelector((state: any) => state.transaction);
   const dispatch = useDispatch<AppDispatch>();
-
-  const generateStrongUUID = () => {
-    return Crypto.lib.WordArray.random(20).toString(Crypto.enc.Hex);
-  };
 
   useEffect(() => {
     if (type !== "all") {
@@ -83,7 +79,7 @@ const New = () => {
       date: date.toDateString(),
       category,
       description,
-      id: generateStrongUUID(),
+      id: Crypto.randomUUID(),
       type,
       user: user.id,
     };

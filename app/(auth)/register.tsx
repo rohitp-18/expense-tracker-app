@@ -13,7 +13,7 @@ import {
 } from "@/components/redux/slices/userSlice";
 import { Snackbar } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Crypto from "crypto-js";
+import * as Crypto from "expo-crypto";
 
 const SignIn = () => {
   const [name, setName] = useState("");
@@ -31,11 +31,6 @@ const SignIn = () => {
 
   const onDismissSnackBar = () => {
     setVisible(false);
-  };
-
-  // create a function for generate uuid
-  const generateStrongUUID = () => {
-    return Crypto.lib.WordArray.random(20).toString(Crypto.enc.Hex);
   };
 
   const handleSubmit = async () => {
@@ -83,18 +78,19 @@ const SignIn = () => {
       }
 
       let form;
-      let key = Crypto.SHA256(
-        process.env.EXPO_PUBLIC_SECURE_KEY || ""
-      ).toString();
 
-      let pass = Crypto.AES.encrypt(password, key).toString();
+      let pass = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        password
+      );
 
       let newUser = {
         name,
         email,
         password: pass,
-        id: generateStrongUUID(),
+        id: Crypto.randomUUID(),
       };
+
       if (users) {
         form = [...tempUser, newUser];
       } else {
@@ -105,12 +101,13 @@ const SignIn = () => {
 
       dispatch(signup(newUser));
       router.push("/(auth)/setLock");
-      console.log(newUser);
       setName("");
       setEmail("");
       setPassword("");
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      setVisible(true);
+      setLoading(false);
+      setTitle(error.message);
       setLoading(false);
     }
   };
