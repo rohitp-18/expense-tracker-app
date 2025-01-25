@@ -17,16 +17,19 @@ const Middleware = ({ children }: { children: ReactNode }) => {
       if (!user.pin) return router.push("/(auth)/setLock");
       AsyncStorage.getItem(`transaction[${user.id}]`).then(async (res) => {
         if (!res) {
-          AsyncStorage.setItem(`transaction[${user.id}]`, JSON.stringify([]));
+          await AsyncStorage.setItem(
+            `transaction[${user.id}]`,
+            JSON.stringify([])
+          );
         } else {
-          let temp = JSON.parse(res);
+          let temp = await JSON.parse(res);
           if (temp.length > 0) {
             router.push("/(tabs)");
           }
           dispatch(allTransactions(temp));
         }
       });
-      AsyncStorage.getItem(`categories[${user.id}]`).then((res) => {
+      AsyncStorage.getItem(`categories[${user.id}]`).then(async (res) => {
         if (!res) {
           let categories = [
             { id: "2", type: "expense", name: "Mess" },
@@ -41,15 +44,17 @@ const Middleware = ({ children }: { children: ReactNode }) => {
             { id: "15", type: "income", name: "Job" },
             { id: "16", type: "income", name: "Other" },
           ];
-          AsyncStorage.setItem(
+          await AsyncStorage.setItem(
             `categories[${user.id}]`,
             JSON.stringify(categories)
           );
+          console.log("first");
 
           dispatch(allCategories(categories));
           return;
         }
-        let categories = JSON.parse(res);
+        console.log(res);
+        let categories = await JSON.parse(res);
         dispatch(allCategories(categories));
       });
       return () => {};

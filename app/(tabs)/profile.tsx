@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ProfilePage = () => {
   const { user, users } = useSelector((state: any) => state.user);
@@ -40,24 +41,30 @@ const ProfilePage = () => {
     <>
       <ScrollView className="bg-primary">
         <View className="min-h-screen">
-          {/* Profile Section */}
+          {/* Profile photo Section */}
           <View className="w-full h-56 flex justify-center flex-col items-center mt-12 mb-10 mx-auto">
-            <Image
-              source={
-                user.image
-                  ? `data:image/jpeg;base64,${user.image.base64}`
-                  : require("../../assets/images/r_logo.jpg")
-              }
-              style={{
-                width: 150,
-                height: 150,
-                borderRadius: 100,
-                padding: 10,
-                marginBottom: 10,
-                borderColor: "#161622",
-                borderWidth: 1,
-              }}
-            />
+            {user.image ? (
+              <Image
+                source={
+                  user.image
+                    ? `data:image/jpeg;base64,${user.image.base64}`
+                    : require("../../assets/images/r_logo.jpg")
+                }
+                style={{
+                  width: 150,
+                  height: 150,
+                  borderRadius: 100,
+                  padding: 10,
+                  marginBottom: 10,
+                  borderColor: "#161622",
+                  borderWidth: 1,
+                }}
+              />
+            ) : (
+              <View className="w-36 h-36 justify-center items-center bg-black-200 rounded-full">
+                <Icon name="account" color={"white"} size={100} />
+              </View>
+            )}
             <Text className="text-lg text-white font-bold">{user.name}</Text>
             <Text className="text-base text-gray-400">{user.email}</Text>
           </View>

@@ -15,6 +15,10 @@ import Slide from "@/components/Slide";
 import Filters from "@/components/Filters";
 import moment from "moment";
 import Transac from "@/components/transac";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
+import * as DocumentPicker from "expo-document-picker";
 
 export default function Bookmark() {
   interface filterInter {
@@ -37,6 +41,7 @@ export default function Bookmark() {
   });
 
   const { transactions } = useSelector((state: any) => state.transaction);
+  const { user } = useSelector((state: any) => state.user);
 
   // to track the change in search keyword and change in transactions
   useEffect(() => {
@@ -165,6 +170,136 @@ export default function Bookmark() {
     setSearchData(tempData);
   }
 
+  const requestFileWritePermission = async () => {
+    const permissions =
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+    console.log(permissions.granted);
+    if (!permissions.granted) {
+      console.log("File write Permissions Denied!!");
+      return {
+        access: false,
+        directoryUri: null,
+      };
+    }
+    return {
+      access: true,
+      directoryUri: permissions.directoryUri,
+    };
+  };
+
+  const saveReportFile = async (csv: any, documentDirectory: string) => {
+    try {
+      await FileSystem.StorageAccessFramework.createFileAsync(
+        documentDirectory,
+        "My_file.csv",
+        "text/csv"
+      )
+        .then(async (uri) => {
+          const fileUri = FileSystem.documentDirectory + "data.csv";
+          await FileSystem.writeAsStringAsync(fileUri, csv, {
+            encoding: FileSystem.EncodingType.UTF8,
+          });
+        })
+        .then((res) => {
+          console.log(res);
+          alert(`File Saved`);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } catch (error: any) {
+      alert(`Could not Download file ${error.message}`);
+    }
+  };
+
+  const createCSV = async () => {
+    try {
+      // Example: Retrieve data from AsyncStorage (replace with your actual data key)
+      const storedData = await AsyncStorage.getItem(`transaction[${user.id}]`);
+
+      // Check if there's data
+      if (storedData !== null) {
+        const data = JSON.parse(storedData); // Assuming the data is stored as JSON
+        const csv = convertToCSV(data); // Convert the JSON data to CSV
+
+        // Save the CSV to a file
+        const fileUri = FileSystem.documentDirectory + "data.csv";
+        await FileSystem.writeAsStringAsync(fileUri, csv);
+
+        // Share the CSV file
+        await Sharing.shareAsync(fileUri);
+
+        // let fileUri = await requestFileWritePermission();
+        // if (!fileUri.directoryUri) {
+        //   return;
+        // }
+        // await saveReportFile(csv, fileUri.directoryUri);
+
+        // console.log("CSV file saved at:", fileUri);
+
+        // await FileSystem.downloadAsync(fileUri.directoryUri, fileUri.directoryUri);
+
+        // const fileUri = await requestFileWritePermission();
+        // if (fileUri.access && await Sharing.isAvailableAsync()) {
+        //   await Sharing.shareAsync(fileUri.directoryUri);
+        // } else {
+        //   alert("Sharing is not available on this device.");
+        // }
+      }
+    } catch (error) {
+      console.error("Error reading from AsyncStorage:", error);
+    }
+  };
+
+  const importCSV = async () => {
+    try {
+      // upload document file from device
+      const file = await DocumentPicker.getDocumentAsync({
+        type: "text/csv",
+        copyToCacheDirectory: false,
+      });
+      if (file.canceled) return;
+
+      const csvString = await FileSystem.readAsStringAsync(
+        file.assets.map((a) => a.uri)[0]
+      );
+      const rows = csvString.split("\n");
+      const keys = rows[0].split(",");
+      let tempTransaction = rows.slice(1).map((row) => {
+        const values = row.split(",");
+        const transaction: any = {};
+        keys.forEach((key, index) => {
+          transaction[key] = values[index];
+        });
+        return transaction as Transaction;
+      });
+
+      // Assuming you want to save the imported transactions to AsyncStorage
+      tempTransaction = [...tempTransaction, ...transactions];
+      await AsyncStorage.setItem(
+        `transaction[${user.id}]`,
+        JSON.stringify(tempTransaction)
+      );
+
+      // Update the state with the new transactions
+      setSearchData(tempTransaction);
+      applyFilter();
+    } catch (error) {
+      console.error("Error importing CSV:", error);
+    }
+  };
+
+  const convertToCSV = (jsonData: Transaction[]): string => {
+    // Assuming each object in the array has the same keys
+    const keys = Object.keys(jsonData[0]);
+    const header = keys.join(",");
+    const rows = jsonData.map((item: Transaction) =>
+      keys.map((key: string) => (item as any)[key]).join(",")
+    );
+
+    return [header, ...rows].join("\n");
+  };
+
   return (
     <>
       <ScrollView>
@@ -183,14 +318,21 @@ export default function Bookmark() {
             </View>
           </View>
 
-          {/* add new transaction button and filters */}
+          {/* export transaction button and filters */}
           <View className="flex flex-row w-full pt-7 px-3 justify-between items-center">
             <TouchableOpacity
-              onPress={() => router.push("/(tabs)/new")}
+              onPress={() => createCSV()}
               className="border border-[#aaa] opacity-90 flex flex-row rounded-lg items-center justify-between p-1 px-2 pl-1 gap-1"
             >
-              <Icon name="plus" size={13} color="white" />
-              <Text className="text-white text-sm">New Transaction</Text>
+              <Icon name="export" size={13} color="white" />
+              <Text className="text-white text-sm">Export Transaction</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => importCSV()}
+              className="border border-[#aaa] opacity-90 flex flex-row rounded-lg items-center justify-between p-1 px-2 pl-1 gap-1"
+            >
+              <Icon name="export" size={13} color="white" />
+              <Text className="text-white text-sm">Import Transaction</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setOpen(true)}

@@ -198,24 +198,25 @@ const Transac = ({ item }: { item: Transaction }) => {
           open={update}
           onClose={() => setUpdate(false)}
         >
-          <ScrollView
-            style={{
-              height: 0.5 * window.innerHeight,
-              maxHeight: 0.5 * window.innerHeight,
-            }}
-          >
-            <View style={{ height: "100%" }}>
-              <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
-                <Text className="font-bold text-white text-lg text-center">
-                  Update Transaction
-                </Text>
-                <TouchableOpacity
-                  className="absolute right-3 top-2"
-                  onPress={() => setUpdate(false)}
-                >
-                  <Icon name={"close"} size={28} className="text-gray-400" />
-                </TouchableOpacity>
-              </View>
+          {/* <ScrollView
+          style={{
+            height: 0.5 * window.innerHeight,
+            maxHeight: 0.5 * window.innerHeight,
+          }}
+        > */}
+          <View className="overflow-y-auto max-h-[75vh]">
+            <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
+              <Text className="font-bold text-white text-lg text-center">
+                Update Transaction
+              </Text>
+              <TouchableOpacity
+                className="absolute right-3 top-2"
+                onPress={() => setUpdate(false)}
+              >
+                <Icon name={"close"} size={28} className="text-gray-400" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
               <View className="min-h-20 w-full px-2 py-2">
                 <View className="px-4 pb-10">
                   <InputField
@@ -316,26 +317,26 @@ const Transac = ({ item }: { item: Transaction }) => {
                   />
                 </View>
               </View>
-              <View className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4">
-                <TouchableOpacity
-                  className="bg-secondary-200 p-2 min-w-16 rounded-lg"
-                  onPress={updateTransaction}
-                >
-                  <Text className="color-white text-center uppercase font-semibold">
-                    Update
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="border border-[#49496c] p-2 min-w-16 rounded-lg"
-                  onPress={() => setUpdate(false)}
-                >
-                  <Text className="color-white text-center uppercase font-semibold">
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-              </View>
+            </ScrollView>
+            <View className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4">
+              <TouchableOpacity
+                className="bg-secondary-200 p-2 min-w-16 rounded-lg"
+                onPress={updateTransaction}
+              >
+                <Text className="color-white text-center uppercase font-semibold">
+                  Update
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="border border-[#49496c] p-2 min-w-16 rounded-lg"
+                onPress={() => setUpdate(false)}
+              >
+                <Text className="color-white text-center uppercase font-semibold">
+                  Cancel
+                </Text>
+              </TouchableOpacity>
             </View>
-          </ScrollView>
+          </View>
         </Slide>
       )}
       {deleteT && (

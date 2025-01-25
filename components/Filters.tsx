@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { RadioButton } from "react-native-paper";
@@ -52,7 +58,11 @@ const Filters = ({ onClose, onClick, filters, setFilters }: filterProps) => {
 
   return (
     <View className="overflow-y-auto max-h-[75vh]">
-      <View className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2">
+      {/* heading of filters */}
+      <View
+        style={{ position: "sticky", top: 0, left: 0 }}
+        className="py-3 sticky bg-primary z-10 top-0 left-0 w-full px-2"
+      >
         <Text className="font-bold text-white text-lg text-center">
           Filters
         </Text>
@@ -60,145 +70,157 @@ const Filters = ({ onClose, onClick, filters, setFilters }: filterProps) => {
           <Icon name={"close"} size={28} className="text-gray-400" />
         </TouchableOpacity>
       </View>
-      <View className="min-h-20 w-full px-2 py-4">
-        <View className="flex flex-row flex-wrap gap-4 justify-evenly w-full items-center py-4">
-          <Text className="text-gray-100 text-base font-semibold w-full">
-            Sort By
-          </Text>
-          {[
-            { label: "Asending Order", value: "asending" },
-            { label: "Desending Order", value: "desending" },
-            { label: "Biggest Amount", value: "big" },
-            { label: "Smallest Amount", value: "small" },
-          ].map((item) => (
-            <TouchableOpacity
-              key={item.value}
-              onPress={() => setFilters({ ...filters, sort: item.value })}
-              className={`p-2 rounded-lg ${
-                filters.sort === item.value ? "bg-secondary" : "bg-primary"
-              } border border-[#161690] border-solid shadow-gray-100`}
-            >
-              <Text className="text-white opacity-90">{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
 
-        <View className="flex flex-row flex-wrap gap-4 justify-evenly w-full items-center py-4">
-          <Text className="text-gray-100 text-base font-semibold w-full">
-            Days
-          </Text>
-          {[
-            { label: "All", value: "all" },
-            { label: "Week", value: "thisWeek" },
-            { label: "Month", value: "thisMonth" },
-            { label: "Year", value: "thisYear" },
-            { label: "Last Week", value: "week" },
-            { label: "Last Month", value: "month" },
-            { label: "Last Year", value: "year" },
-          ].map((item) => (
-            <TouchableOpacity
-              key={item.value}
-              onPress={() => setFilters({ ...filters, date: item.value })}
-              className={`p-2 rounded-lg ${
-                filters.date === item.value ? "bg-secondary" : "bg-primary"
-              } border border-[#161690] border-solid shadow-gray-100`}
-            >
-              <Text className="text-white opacity-90">{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View className={`space-y-2 mt-6 w-full`}>
-          <Text className="text-base text-gray-100">Type</Text>
-          <RadioButton.Group
-            onValueChange={(newValue) =>
-              setFilters({ ...filters, type: newValue })
-            }
-            value={filters.type}
-          >
-            <View className="flex flex-row items-center justify-between">
-              <RadioButton.Item
-                labelStyle={{ color: "white" }}
-                label="All"
-                value="all"
-                position="leading"
-                color="white"
-              />
-              <RadioButton.Item
-                labelStyle={{ color: "white" }}
-                label="Debit"
-                value="debit"
-                position="leading"
-                color="red"
-              />
-              <RadioButton.Item
-                labelStyle={{ color: "white" }}
-                color="green"
-                label="Credit"
-                value="credit"
-                position="leading"
-              />
-            </View>
-          </RadioButton.Group>
-        </View>
-        {filters.type !== "all" && (
+      {/* main content of filters */}
+      <ScrollView>
+        <View className="min-h-20 w-full px-2 py-4">
+          <View className="flex flex-row flex-wrap gap-4 justify-evenly w-full items-center py-4">
+            <Text className="text-gray-100 text-base font-semibold w-full">
+              Sort By
+            </Text>
+            {[
+              { label: "Asending Order", value: "asending" },
+              { label: "Desending Order", value: "desending" },
+              { label: "Biggest Amount", value: "big" },
+              { label: "Smallest Amount", value: "small" },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.value}
+                onPress={() => setFilters({ ...filters, sort: item.value })}
+                className={`p-2 rounded-lg ${
+                  filters.sort === item.value ? "bg-secondary" : "bg-primary"
+                } border border-[#161690] border-solid shadow-gray-100`}
+              >
+                <Text className="text-white opacity-90">{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View className="flex flex-row flex-wrap gap-4 justify-evenly w-full items-center py-4">
+            <Text className="text-gray-100 text-base font-semibold w-full">
+              Days
+            </Text>
+            {[
+              { label: "All", value: "all" },
+              { label: "Week", value: "thisWeek" },
+              { label: "Month", value: "thisMonth" },
+              { label: "Year", value: "thisYear" },
+              { label: "Last Week", value: "week" },
+              { label: "Last Month", value: "month" },
+              { label: "Last Year", value: "year" },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.value}
+                onPress={() => setFilters({ ...filters, date: item.value })}
+                className={`p-2 rounded-lg ${
+                  filters.date === item.value ? "bg-secondary" : "bg-primary"
+                } border border-[#161690] border-solid shadow-gray-100`}
+              >
+                <Text className="text-white opacity-90">{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
           <View className={`space-y-2 mt-6 w-full`}>
-            <Text className="text-base text-gray-100">Category</Text>
-            <SelectList
-              setSelected={(val: any) =>
-                setFilters({ ...filters, category: val })
+            <Text className="text-base text-gray-100">Type</Text>
+            <RadioButton.Group
+              onValueChange={(newValue) =>
+                setFilters({ ...filters, type: newValue })
               }
-              data={categoryType}
-              save="value"
-              defaultOption={{ key: filters.category, value: filters.category }}
-              boxStyles={{ backgroundColor: "#161622" }}
-              dropdownItemStyles={{ backgroundColor: "#161622" }}
-              dropdownTextStyles={{ color: "white" }}
-              dropdownStyles={{ backgroundColor: "black" }}
-              inputStyles={{ color: "white" }}
-              search={false}
-              placeholder="Select Category"
-              searchicon={<Icon name="search" size={24} color={"white"} />}
-            />
-          </View>
-        )}
-
-        <View className="flex flex-row mt-6 flex-wrap gap-4 justify-evenly w-full items-center py-4">
-          <Text className="text-gray-100 text-base font-semibold w-full">
-            Transaction count
-          </Text>
-          {[
-            { label: "All", value: "all" },
-            { label: "15", value: "15" },
-            { label: "50", value: "50" },
-            { label: "100", value: "100" },
-            { label: "Custom", value: "custom" },
-          ].map((item) => (
-            <TouchableOpacity
-              key={item.value}
-              onPress={() => setFilters({ ...filters, count: item.value })}
-              className={`p-2 rounded-lg ${
-                filters.count === item.value ? "bg-secondary" : "bg-primary"
-              } border border-[#161690] border-solid shadow-gray-100`}
+              value={filters.type}
             >
-              <Text className="text-white opacity-90">{item.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {filters.count === "custom" && (
-          <View className={"space-y-2 mt-6 w-full"}>
-            <Text className="text-base text-white">Count</Text>
-            <View className="w-full h-10 px-4 rounded-xl border-2 border-black-200 focus:border-secondary flex flex-row items-center">
-              <TextInput
-                className="flex-auto flex text-white font-semibold text-base"
-                value={filters.count}
-                onChangeText={(e) => setFilters({ ...filters, count: e })}
+              <View className="flex flex-row items-center justify-between">
+                <RadioButton.Item
+                  labelStyle={{ color: "white" }}
+                  label="All"
+                  value="all"
+                  position="leading"
+                  color="white"
+                />
+                <RadioButton.Item
+                  labelStyle={{ color: "white" }}
+                  label="Debit"
+                  value="debit"
+                  position="leading"
+                  color="red"
+                />
+                <RadioButton.Item
+                  labelStyle={{ color: "white" }}
+                  color="green"
+                  label="Credit"
+                  value="credit"
+                  position="leading"
+                />
+              </View>
+            </RadioButton.Group>
+          </View>
+          {filters.type !== "all" && (
+            <View className={`space-y-2 mt-6 w-full`}>
+              <Text className="text-base text-gray-100">Category</Text>
+              <SelectList
+                setSelected={(val: any) =>
+                  setFilters({ ...filters, category: val })
+                }
+                data={categoryType}
+                save="value"
+                defaultOption={{
+                  key: filters.category,
+                  value: filters.category,
+                }}
+                boxStyles={{ backgroundColor: "#161622" }}
+                dropdownItemStyles={{ backgroundColor: "#161622" }}
+                dropdownTextStyles={{ color: "white" }}
+                dropdownStyles={{ backgroundColor: "black" }}
+                inputStyles={{ color: "white" }}
+                search={false}
+                placeholder="Select Category"
+                searchicon={<Icon name="search" size={24} color={"white"} />}
               />
             </View>
+          )}
+
+          <View className="flex flex-row mt-6 flex-wrap gap-4 justify-evenly w-full items-center py-4">
+            <Text className="text-gray-100 text-base font-semibold w-full">
+              Transaction count
+            </Text>
+            {[
+              { label: "All", value: "all" },
+              { label: "15", value: "15" },
+              { label: "50", value: "50" },
+              { label: "100", value: "100" },
+              { label: "Custom", value: "custom" },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.value}
+                onPress={() => setFilters({ ...filters, count: item.value })}
+                className={`p-2 rounded-lg ${
+                  filters.count === item.value ? "bg-secondary" : "bg-primary"
+                } border border-[#161690] border-solid shadow-gray-100`}
+              >
+                <Text className="text-white opacity-90">{item.label}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
-        )}
-      </View>
-      <View className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4">
+
+          {filters.count === "custom" && (
+            <View className={"space-y-2 mt-6 w-full"}>
+              <Text className="text-base text-white">Count</Text>
+              <View className="w-full h-10 px-4 rounded-xl border-2 border-black-200 focus:border-secondary flex flex-row items-center">
+                <TextInput
+                  className="flex-auto flex text-white font-semibold text-base"
+                  value={filters.count}
+                  onChangeText={(e) => setFilters({ ...filters, count: e })}
+                />
+              </View>
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* action area of filters */}
+      <View
+        style={{ position: "sticky", bottom: 0, left: 0 }}
+        className="flex-row z-20 bg-primary sticky bottom-0 left-0 w-full justify-between gap-2 px-2 py-4"
+      >
         <TouchableOpacity
           className="bg-secondary-100 p-2 min-w-16 rounded-lg"
           onPress={onClick}
