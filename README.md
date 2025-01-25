@@ -42,7 +42,7 @@ This app uses the [AsyncStorage](https://react-native-async-storage.github.io/as
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/expense-management-app.git
+   git clone https://github.com/rohitp-18/expense-tracker-app.git
    cd expense-management-app
    ```
 
